@@ -1,0 +1,44 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    // Default deny
+    match /{document=**} {
+      allow read, write: if false;
+    }
+
+    // Helper functions
+    function isSignedIn() {
+      return request.auth != null;
+    }
+
+    function isValidId(id) {
+      return id is string && id.size() <= 128 && id.matches('^[a-zA-Z0-9_\\-]+$');
+    }
+
+    // Batch validation
+    function isValidBatch(data) {
+      return data.name is string && data.name.size() > 0 && data.name.size() <= 200
+        && data.status in ['pending', 'processing', 'completed', 'failed'];
+    }
+
+    match /batches/{batchId} {
+      allow read: if true; // Public view for this demo as requested "anyone can view"
+      allow create: if true; // Allowed for demo, normally would be isSignedIn()
+      allow update: if true;
+      allow delete: if true;
+    }
+
+    // Evaluation validation
+    function isValidEvaluation(data) {
+      return data.batchId is string && data.batchId.size() > 0
+        && data.status in ['processing', 'success', 'error'];
+    }
+
+    match /evaluations/{evaluationId} {
+      allow read: if true;
+      allow create: if true;
+      allow update: if true;
+      allow delete: if true;
+    }
+  }
+}

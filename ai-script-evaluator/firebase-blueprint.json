@@ -1,0 +1,62 @@
+{
+  "entities": {
+    "EvaluationBatch": {
+      "title": "Evaluation Batch",
+      "description": "A group of scripts evaluated together.",
+      "type": "object",
+      "properties": {
+        "name": { "type": "string" },
+        "driveUrl": { "type": "string" },
+        "status": { "type": "string", "enum": ["pending", "processing", "completed", "failed"] },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" },
+        "stats": {
+          "type": "object",
+          "properties": {
+            "total": { "type": "number" },
+            "completed": { "type": "number" },
+            "failed": { "type": "number" }
+          }
+        },
+        "maxMarksPerQuestion": { "type": "number" },
+        "branchName": { "type": "string" }
+      },
+      "required": ["name", "status", "createdAt"]
+    },
+    "EvaluationRecord": {
+      "title": "Evaluation Record",
+      "description": "Individual script evaluation result.",
+      "type": "object",
+      "properties": {
+        "batchId": { "type": "string" },
+        "studentName": { "type": "string" },
+        "phoneNumber": { "type": "string" },
+        "branch": { "type": "string" },
+        "scores": {
+          "type": "object",
+          "description": "Question scores (e.g. { 'Q1': 5, 'Q2': 3 })"
+        },
+        "totalScore": { "type": "number" },
+        "maxScore": { "type": "number" },
+        "feedback": { "type": "string" },
+        "imageUrls": { "type": "array", "items": { "type": "string" } },
+        "isEdited": { "type": "boolean" },
+        "status": { "type": "string", "enum": ["processing", "success", "error"] },
+        "errorMessage": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" },
+        "updatedAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["batchId", "createdAt", "status"]
+    }
+  },
+  "firestore": {
+    "/batches/{batchId}": {
+      "schema": "EvaluationBatch",
+      "description": "Collection of evaluation batches"
+    },
+    "/evaluations/{evaluationId}": {
+      "schema": "EvaluationRecord",
+      "description": "Collection of individual script evaluations"
+    }
+  }
+}

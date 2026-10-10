@@ -1,0 +1,6 @@
+{
+  "name": "AI Script Evaluator",
+  "description": "Automated evaluation of handwritten student scripts using Gemini AI. Extracts student info and calculates question-wise scores with manual override capability.",
+  "requestFramePermissions": [],
+  "majorCapabilities": []
+}
